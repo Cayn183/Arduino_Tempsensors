@@ -39,7 +39,7 @@ void Spannungsmessung()
 {
   //read tje value at analog input
   value = analogRead(voltinput);
-  vout = (value * 4.9) / 1024.0; 
+  vout = (value * 4.65) / 1024.0; 
   vin = vout / (R2/(R1+R2));
   
   if (vin<0.09)
@@ -50,7 +50,6 @@ void Spannungsmessung()
   Serial.print("Spannung: ");
   Serial.print(vin, 1);
   Serial.println("V");
-  delay(5000);
 
   Temperaturmessung();
 }
@@ -62,10 +61,13 @@ void Temperaturmessung()
   float Temperatur = dht.readTemperature();
 
   
-  
-  Serial.println(Luftfeuchtigkeit, 2);
-  Serial.println(Temperatur, 2);
-
+  Serial.print("Luftfeuchtigkeit: ");
+  Serial.print(Luftfeuchtigkeit, 2);
+  Serial.println("%");
+  Serial.print("Tempertatur: ");
+  Serial.print(Temperatur, 2);
+  Serial.println("°C");
+  Serial.println("");
 
     
   mySwitch.send(Temperatur, 2);
