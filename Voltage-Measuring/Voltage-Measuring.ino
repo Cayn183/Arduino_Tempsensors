@@ -30,6 +30,7 @@ void loop()
   }
 
   Serial.print("Spannung: ");
-  Serial.println(vin, 1);
+  Serial.print(vin, 1);
+  Serial.println("V");
   delay(5000);
 }
