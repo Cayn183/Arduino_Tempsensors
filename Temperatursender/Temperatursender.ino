@@ -1,4 +1,4 @@
-//Temperatursender Version 1.2//
+//Temperatursender Version     //
 
 
 //Benötigte Libarys
@@ -64,21 +64,17 @@ void Spannungsmessung()
 
 void Temperaturmessung()
 {
-  float Luftfeuchtigkeit = dht.readHumidity();
-  float Temperatur = dht.readTemperature();
-
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  int Temperatur = (t * 100);
+  int Luftfeuchtigkeit = (h * 100);
+  int Spannung = (vin * 100);
   
-  Serial.print("Luftfeuchtigkeit: ");
-  Serial.print(Luftfeuchtigkeit, 2);
-  Serial.println("%");
-  Serial.print("Tempertatur: ");
-  Serial.print(Temperatur, 2);
-  Serial.println("°C");
-  Serial.println("");
+  String Auswertung = String('a' + Spannung + 'b' + Temperatur + 'c' + Luftfeuchtigkeit);
+ 
+  Serial.println(Auswertung);
 
     
-  mySwitch.send(Temperatur, 2);
-  mySwitch.send(Luftfeuchtigkeit, 2);
-  delay(10000);
+  //mySwitch.send(Auswertung, 2);
 }
 
