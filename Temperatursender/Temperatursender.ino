@@ -2,7 +2,7 @@
 
 
 //Benötigte Libarys
-#include <RCSwitch.h> //RCSwitch-Libary einfügen
+#include <VirtualWire.h>
 #include <DHT.h>  //DHT-Sensor Libary einfügen
 
 //Variablen für DHT-Sensor
@@ -23,7 +23,17 @@ int value = 0;  //Definiere Value Pin als A0
 
 //Variablen für Datenübertragung
 int Data = 7;   //Definiere Data Pin als D7
-RCSwitch mySwitch = RCSwitch();
+
+
+struct Daten
+{
+	float Spannung;
+	float Temperatur;
+	float Luftfeuchtigkeit;
+};
+
+Daten daten;
+
 
 void setup()
 {
@@ -32,13 +42,17 @@ void setup()
 
   pinMode(Data, INPUT); //Definiere Data-Pin als Input
   dht.begin();  //Starte Sensor-Messungen
+  
+  pinMode(12, OUTPUT);
+  vw_setup(2000); // Bits per sec
+  vw_set_tx_pin(12);// Set the Tx pin. Default is 12
 
 }
 
 void loop()
 {
-  Spannungsmessung(); //Führe void Spannungsmessung durch
-  Temperaturmessung();	//Führe void Temperaturmessung durch
+  Spannungsmessung(); //Führe Spannungsmessung durch
+  Temperaturmessung();	//Führe Temperaturmessung durch
   delay(10000);	//Pause von 10Sekunden
 }
 
@@ -64,17 +78,11 @@ void Spannungsmessung()
 
 void Temperaturmessung()
 {
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-  int Temperatur = (t * 100);
-  int Luftfeuchtigkeit = (h * 100);
-  int Spannung = (vin * 100);
+  daten.Spannung = vin;
+  daten.Luftfeuchtigkeit = dht.readHumidity();
+  daten.Temperatur = dht.readTemperature();
   
-  String Auswertung = String('a' + Spannung + 'b' + Temperatur + 'c' + Luftfeuchtigkeit);
- 
-  Serial.println(Auswertung);
-
-    
-  //mySwitch.send(Auswertung, 2);
+  vw_send((byte*)&daten, sizeof(daten));
+  vw_wait_tx();
 }
 
